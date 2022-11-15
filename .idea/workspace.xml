@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8896b4e0-8a9b-409f-9505-f7c36353d208" name="Changes" comment="Add tailwind and sass to application">
-      <change afterPath="$PROJECT_DIR$/src/scene/Scene.ts" afterDir="false" />
+    <list default="true" id="8896b4e0-8a9b-409f-9505-f7c36353d208" name="Changes" comment="Create scene">
+      <change afterPath="$PROJECT_DIR$/src/scene/Cube.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scene/Vertex.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scene/Vertex2D.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/Scene.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/Scene.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,11 +41,17 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "D:/projects/frontend/pw-graphics/src/scene",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "preferences.sourceCode.TypeScript",
     "ts.external.directory.path": "D:\\projects\\frontend\\pw-graphics\\node_modules\\typescript\\lib"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\projects\frontend\pw-graphics\src\scene" />
+    </key>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -52,7 +60,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1668458935057</updated>
-      <workItem from="1668458936751" duration="1868000" />
+      <workItem from="1668458936751" duration="2205000" />
+      <workItem from="1668541647852" duration="3950000" />
     </task>
     <task id="LOCAL-00001" summary="Add tailwind and sass to application">
       <created>1668460362125</created>
@@ -61,7 +70,14 @@
       <option name="project" value="LOCAL" />
       <updated>1668460362125</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Create scene">
+      <created>1668460931950</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1668460931950</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -82,7 +98,8 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="Add tailwind and sass to application" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add tailwind and sass to application" />
+    <MESSAGE value="Create scene" />
+    <option name="LAST_COMMIT_MESSAGE" value="Create scene" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
