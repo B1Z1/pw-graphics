@@ -1,7 +1,8 @@
-export class Vertex2D {
+export class Vector3D {
 	constructor(
 		private x: number,
-		private y: number
+		private y: number,
+		private z: number
 	) {
 	}
 
@@ -19,5 +20,13 @@ export class Vertex2D {
 
 	setY(y: number): void {
 		this.y = y;
+	}
+
+	getZ(): number {
+		return this.z;
+	}
+
+	setZ(z: number): void {
+		this.z = z;
 	}
 }
