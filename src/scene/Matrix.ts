@@ -12,4 +12,8 @@ export class Matrix {
 	getMatrix(): number[][] {
 		return this.matrix;
 	}
+
+	setMatrix(x: number, y: number, value: number): void {
+		this.matrix[x][y] = value;
+	}
 }

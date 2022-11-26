@@ -29,4 +29,8 @@ export class Vector3D {
 	setZ(z: number): void {
 		this.z = z;
 	}
+
+	copy(): Vector3D {
+		return new Vector3D(this.x, this.y, this.z);
+	}
 }

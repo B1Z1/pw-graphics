@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8896b4e0-8a9b-409f-9505-f7c36353d208" name="Changes" comment="Reset scene">
-      <change afterPath="$PROJECT_DIR$/src/scene/Matrix.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/scene/Mesh.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/scene/Triangle.ts" afterDir="false" />
+    <list default="true" id="8896b4e0-8a9b-409f-9505-f7c36353d208" name="Changes" comment="Refactor files and render cube dotes with triangles">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scene/Cube.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/Cube.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/Matrix.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/Matrix.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scene/Scene.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/Scene.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene/Vertex2D.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene/Vertex3D.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/Vector3D.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/Triangle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/Triangle.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/Vector3D.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/Vector3D.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,7 +78,14 @@
       <option name="project" value="LOCAL" />
       <updated>1668460931950</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Refactor files and render cube dotes with triangles">
+      <created>1669473856538</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1669473856538</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -102,7 +107,8 @@
     <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="Add tailwind and sass to application" />
     <MESSAGE value="Create scene" />
-    <option name="LAST_COMMIT_MESSAGE" value="Create scene" />
+    <MESSAGE value="Refactor files and render cube dotes with triangles" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor files and render cube dotes with triangles" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
