@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="8896b4e0-8a9b-409f-9505-f7c36353d208" name="Changes" comment="Create cube">
+    <list default="true" id="8896b4e0-8a9b-409f-9505-f7c36353d208" name="Changes" comment="Update IDE settings">
+      <change afterPath="$PROJECT_DIR$/src/camera/Camera.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scene/SceneMoveState.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/util/matrix/MatrixCalculator.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/util/vector/VectorCalculator.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/Cube.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/figures/Cube.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/Matrix.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/util/matrix/Matrix.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/Mesh.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/util/mesh/Mesh.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/Scene.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/Scene.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/Triangle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/figures/Triangle.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/Vector3D.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/util/vector/Vector3D.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,20 +45,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/projects/frontend/pw-graphics/src/scene&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode.TypeScript&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;D:\\projects\\frontend\\pw-graphics\\node_modules\\typescript\\lib&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "D:/projects/frontend/pw-graphics/src/scene",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.sourceCode.TypeScript",
+    "ts.external.directory.path": "D:\\projects\\frontend\\pw-graphics\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\projects\frontend\pw-graphics\src\scene" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\projects\frontend\pw-graphics\src\util\mesh" />
+      <recent name="D:\projects\frontend\pw-graphics\src\scene" />
+      <recent name="D:\projects\frontend\pw-graphics\src\util\vector" />
+      <recent name="D:\projects\frontend\pw-graphics\src\util" />
+      <recent name="D:\projects\frontend\pw-graphics\src\matrix" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -58,7 +83,12 @@
       <updated>1668458935057</updated>
       <workItem from="1668458936751" duration="2205000" />
       <workItem from="1668541647852" duration="3950000" />
-      <workItem from="1669554519419" duration="604000" />
+      <workItem from="1669554519419" duration="15850000" />
+      <workItem from="1669583561889" duration="312000" />
+      <workItem from="1669752040155" duration="722000" />
+      <workItem from="1669831240656" duration="193000" />
+      <workItem from="1669925561480" duration="96000" />
+      <workItem from="1669925673919" duration="2568000" />
     </task>
     <task id="LOCAL-00001" summary="Add tailwind and sass to application">
       <created>1668460362125</created>
@@ -88,7 +118,14 @@
       <option name="project" value="LOCAL" />
       <updated>1669492867160</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Update IDE settings">
+      <created>1669563838403</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1669563838403</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -112,7 +149,8 @@
     <MESSAGE value="Create scene" />
     <MESSAGE value="Refactor files and render cube dotes with triangles" />
     <MESSAGE value="Create cube" />
-    <option name="LAST_COMMIT_MESSAGE" value="Create cube" />
+    <MESSAGE value="Update IDE settings" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update IDE settings" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

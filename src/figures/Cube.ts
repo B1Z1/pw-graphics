@@ -1,5 +1,5 @@
-import { Mesh } from './Mesh';
-import { Vector3D } from './Vector3D';
+import { Mesh } from '../util/mesh/Mesh';
+import { Vector3D } from '../util/vector/Vector3D';
 import { Triangle } from './Triangle';
 
 export class Cube {

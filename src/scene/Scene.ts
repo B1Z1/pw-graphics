@@ -1,12 +1,37 @@
-import { Cube } from './Cube';
-import { Vector3D } from './Vector3D';
-import { Matrix } from './Matrix';
-import { Triangle } from './Triangle';
+import { Cube } from '../figures/Cube';
+import { Vector3D } from '../util/vector/Vector3D';
+import { Matrix } from '../util/matrix/Matrix';
+import { Triangle } from '../figures/Triangle';
+import { SceneMoveState } from './SceneMoveState';
+import { MatrixCalculator } from '../util/matrix/MatrixCalculator';
+import { Camera } from '../camera/Camera';
+import { VectorCalculator } from '../util/vector/VectorCalculator';
 
 export class Scene {
+	private static readonly DEFAULT_FOV = 90;
+	private static readonly ZOOM_FOV = 50;
+
 	private readonly canvas: HTMLCanvasElement;
 
 	private readonly ctx: CanvasRenderingContext2D;
+
+	private readonly speed: number = 0.05;
+
+	private readonly camera: Camera = new Camera(
+		new Vector3D(0, 0, 0),
+		0.1,
+		100,
+		Scene.DEFAULT_FOV,
+		0,
+		0
+	);
+
+	private readonly cube: Cube = new Cube(
+		new Vector3D(0, 0, 10),
+		2
+	);
+
+	private lookDirectionVector: Vector3D = new Vector3D(0, 0, 1);
 
 	private width: number = 0;
 	private height: number = 0;
@@ -14,15 +39,11 @@ export class Scene {
 	private dx: number = 0;
 	private dy: number = 0;
 
-	private cube: Cube = new Cube(new Vector3D(0, 0, 3));
+	private moveState: SceneMoveState = SceneMoveState.IDLE;
 
 	private matrixProjection = new Matrix();
 
-	private fNear: number = 0.1;
-	private fFar: number = 1000;
-	private fFov: number = 90;
-	private fFovRad = 1 / Math.tan(this.fFov * 0.5 / 180 * Math.PI);
-	private fAspectRatio: number = 0;
+	private currentFov: number = Scene.DEFAULT_FOV;
 
 	constructor(
 		canvasSelector: string
@@ -37,25 +58,60 @@ export class Scene {
 
 	private initialize(): void {
 		this.updateSize();
-		this.updateMatrix();
+		this.updateAspectRatio();
+		this.updateMatrixProjection();
+
 		this.observeWindowResize();
+		this.observeKeyDown();
+		this.observeKeyUp();
 
 		this.render();
-	}
-
-	private updateMatrix(): void {
-		this.matrixProjection.setMatrix(0, 0, this.fAspectRatio * this.fFovRad);
-		this.matrixProjection.setMatrix(1, 1, this.fFovRad);
-		this.matrixProjection.setMatrix(2, 2, this.fFar / (this.fFar - this.fNear));
-		this.matrixProjection.setMatrix(3, 2, (-this.fFar * this.fNear) / (this.fFar - this.fNear));
-		this.matrixProjection.setMatrix(2, 3, 1);
-		this.matrixProjection.setMatrix(3, 3, 0);
 	}
 
 	private observeWindowResize(): void {
 		window.addEventListener('resize', () => {
 			this.updateSize();
-			this.updateMatrix();
+			this.updateAspectRatio();
+			this.updateMatrixProjection();
+		});
+	}
+
+	private observeKeyDown(): void {
+		window.addEventListener('keydown', (event: KeyboardEvent) => {
+			switch (event.key) {
+				case 'w': {
+					this.moveState = SceneMoveState.UP;
+					break;
+				}
+				case 'd': {
+					this.moveState = SceneMoveState.RIGHT;
+					break;
+				}
+				case 's': {
+					this.moveState = SceneMoveState.DOWN;
+					break;
+				}
+				case 'a': {
+					this.moveState = SceneMoveState.LEFT;
+					break;
+				}
+				case 'z': {
+					let fov = Scene.DEFAULT_FOV;
+
+					if (this.currentFov === Scene.DEFAULT_FOV) {
+						fov = Scene.ZOOM_FOV;
+					}
+
+					this.updateFov(fov);
+					this.updateMatrixProjection();
+				}
+			}
+		});
+	}
+
+	private observeKeyUp(): void {
+		window.addEventListener('keyup', () => {
+			this.moveState = SceneMoveState.IDLE;
 		});
 	}
 
@@ -65,13 +121,37 @@ export class Scene {
 
 		this.dx = this.width / 2;
 		this.dy = this.height / 2;
-		this.fAspectRatio = this.height / this.width;
+	}
+
+	private updateAspectRatio() {
+		this.camera.setAspectRatio(this.height / this.width);
 	}
 
 	private render(): void {
 		this.ctx.clearRect(0, 0, this.width, this.height);
 
-		this.ctx.fillStyle = 'black';
+		const forward = VectorCalculator.multiply(this.lookDirectionVector, .1);
+
+		switch (this.moveState) {
+			case SceneMoveState.UP: {
+				const newPosition = VectorCalculator.add(this.camera.getPosition(), forward);
+				this.camera.setPosition(newPosition);
+				break;
+			}
+			case SceneMoveState.DOWN: {
+				const newPosition = VectorCalculator.substract(this.camera.getPosition(), forward);
+				this.camera.setPosition(newPosition);
+				break;
+			}
+			case SceneMoveState.LEFT: {
+				this.camera.setYaw(this.camera.getYaw() - .01);
+				break;
+			}
+			case SceneMoveState.RIGHT: {
+				this.camera.setYaw(this.camera.getYaw() + .01);
+				break;
+			}
+		}
 
 		this.renderCube();
 
@@ -79,44 +159,78 @@ export class Scene {
 	}
 
 	private renderCube(): void {
+		const matrixRotationZ: Matrix = MatrixCalculator.createMatrixRotationZ(0);
+		const matrixRotationX: Matrix = MatrixCalculator.createMatrixRotationX(0);
+
+		const matrixTranslation: Matrix = MatrixCalculator.createMatrixTranslation(new Vector3D(0, 0, 55));
+
+		let matrixWorld: Matrix = MatrixCalculator.multiply(matrixRotationZ, matrixRotationX);
+		matrixWorld = MatrixCalculator.multiply(matrixWorld, matrixTranslation);
+
+		const upVector3D: Vector3D = new Vector3D(0, 1, 0);
+		let targetVector3D: Vector3D = new Vector3D(0, 0, 1);
+		const matrixCameraRotation: Matrix = MatrixCalculator.createMatrixRotationY(this.camera.getYaw());
+
+		this.lookDirectionVector = MatrixCalculator.multiplyVector(matrixCameraRotation, targetVector3D);
+		targetVector3D = VectorCalculator.add(this.camera.getPosition(), this.lookDirectionVector);
+
+		const matrixCamera: Matrix = MatrixCalculator.pointAt(this.camera.getPosition(), targetVector3D, upVector3D);
+
+		const matrixView: Matrix = MatrixCalculator.quickInverse(matrixCamera);
+
 		for (const triangle of this.cube.getMesh().getTriangles()) {
-			const transformedTriangle = triangle.copy();
-			const [transformedTriangleFirstVector, transformedTriangleSecondVector, transformedTriangleThirdVector] = transformedTriangle.getVectors();
+			const triangleVectors = triangle.getVectors();
 
-			transformedTriangle.setVectors([
-				this.multiplyMatrixVector(transformedTriangleFirstVector, this.matrixProjection),
-				this.multiplyMatrixVector(transformedTriangleSecondVector, this.matrixProjection),
-				this.multiplyMatrixVector(transformedTriangleThirdVector, this.matrixProjection)
+			const triangleTransformed = new Triangle([
+				MatrixCalculator.multiplyVector(matrixWorld, triangleVectors[0]),
+				MatrixCalculator.multiplyVector(matrixWorld, triangleVectors[1]),
+				MatrixCalculator.multiplyVector(matrixWorld, triangleVectors[2])
 			]);
+			const triangleTransformedVectors = triangleTransformed.getVectors();
 
-			const [
-				projectedTriangleFirstVector,
-				projectedTriangleSecondVector,
-				projectedTriangleThirdVector
-			] = transformedTriangle.getVectors();
+			const triangleView: Triangle = new Triangle([
+				MatrixCalculator.multiplyVector(matrixView, triangleTransformedVectors[0]),
+				MatrixCalculator.multiplyVector(matrixView, triangleTransformedVectors[1]),
+				MatrixCalculator.multiplyVector(matrixView, triangleTransformedVectors[2])
+			]);
+			const triangleViewVectors = triangleView.getVectors();
 
-			projectedTriangleFirstVector.setX(
-				(projectedTriangleFirstVector.getX() + 1) * this.dx
-			);
-			projectedTriangleFirstVector.setY(
-				(projectedTriangleFirstVector.getY() + 1) * this.dy
-			);
+			const triangleProjected = new Triangle([
+				MatrixCalculator.multiplyVector(this.matrixProjection, triangleViewVectors[0]),
+				MatrixCalculator.multiplyVector(this.matrixProjection, triangleViewVectors[1]),
+				MatrixCalculator.multiplyVector(this.matrixProjection, triangleViewVectors[2])
+			]);
+			const triangleProjectedVectors = triangleProjected.getVectors();
 
-			projectedTriangleSecondVector.setX(
-				(projectedTriangleSecondVector.getX() + 1) * this.dx
-			);
-			projectedTriangleSecondVector.setY(
-				(projectedTriangleSecondVector.getY() + 1) * this.dy
-			);
+			triangleProjectedVectors[0] = VectorCalculator.divide(triangleProjectedVectors[0], triangleProjectedVectors[0].getW());
+			triangleProjectedVectors[1] = VectorCalculator.divide(triangleProjectedVectors[1], triangleProjectedVectors[1].getW());
+			triangleProjectedVectors[2] = VectorCalculator.divide(triangleProjectedVectors[2], triangleProjectedVectors[2].getW());
 
-			projectedTriangleThirdVector.setX(
-				(projectedTriangleThirdVector.getX() + 1) * this.dx
-			);
-			projectedTriangleThirdVector.setY(
-				(projectedTriangleThirdVector.getY() + 1) * this.dy
-			);
+			triangleProjectedVectors[0].setX(triangleProjectedVectors[0].getX() * -1);
+			triangleProjectedVectors[0].setY(triangleProjectedVectors[0].getY() * -1);
 
-			this.drawTriangle(transformedTriangle);
+			triangleProjectedVectors[1].setX(triangleProjectedVectors[1].getX() * -1);
+			triangleProjectedVectors[1].setY(triangleProjectedVectors[1].getY() * -1);
+
+			triangleProjectedVectors[2].setX(triangleProjectedVectors[2].getX() * -1);
+			triangleProjectedVectors[2].setY(triangleProjectedVectors[2].getY() * -1);
+
+			const offsetViewVector = new Vector3D(1, 1, 0);
+
+			triangleProjectedVectors[0] = VectorCalculator.add(triangleProjectedVectors[0], offsetViewVector);
+			triangleProjectedVectors[1] = VectorCalculator.add(triangleProjectedVectors[1], offsetViewVector);
+			triangleProjectedVectors[2] = VectorCalculator.add(triangleProjectedVectors[2], offsetViewVector);
+
+			triangleProjectedVectors[0].setX(triangleProjectedVectors[0].getX() * this.dx);
+			triangleProjectedVectors[0].setY(triangleProjectedVectors[0].getY() * this.dy);
+
+			triangleProjectedVectors[1].setX(triangleProjectedVectors[1].getX() * this.dx);
+			triangleProjectedVectors[1].setY(triangleProjectedVectors[1].getY() * this.dy);
+
+			triangleProjectedVectors[2].setX(triangleProjectedVectors[2].getX() * this.dx);
+			triangleProjectedVectors[2].setY(triangleProjectedVectors[2].getY() * this.dy);
+
+			this.drawTriangle(triangleProjected);
 		}
 
 	}
@@ -130,23 +244,22 @@ export class Scene {
 		this.ctx.lineTo(triangleSecondVector.getX(), triangleSecondVector.getY());
 		this.ctx.lineTo(triangleThirdVector.getX(), triangleThirdVector.getY());
 		this.ctx.lineTo(triangleFirstVector.getX(), triangleFirstVector.getY());
+		this.ctx.fill();
 		this.ctx.stroke();
 		this.ctx.closePath();
 	}
 
-	private multiplyMatrixVector(vector3D: Vector3D, matrix: Matrix): Vector3D {
-		const matrixValue = matrix.getMatrix();
-		const w = vector3D.getX() * matrixValue[0][3] + vector3D.getY() * matrixValue[1][3] + vector3D.getZ() * matrixValue[2][3] + matrixValue[3][3];
-		let x = vector3D.getX() * matrixValue[0][0] + vector3D.getY() * matrixValue[1][0] + vector3D.getZ() * matrixValue[2][0] + matrixValue[3][0];
-		let y = vector3D.getX() * matrixValue[0][1] + vector3D.getY() * matrixValue[1][1] + vector3D.getZ() * matrixValue[2][1] + matrixValue[3][1];
-		let z = vector3D.getX() * matrixValue[0][2] + vector3D.getY() * matrixValue[1][2] + vector3D.getZ() * matrixValue[2][2] + matrixValue[3][2];
+	private updateMatrixProjection(): void {
+		this.matrixProjection = MatrixCalculator.createMatrixProjection(
+			this.camera.getFov(),
+			this.camera.getAspectRatio(),
+			this.camera.getNear(),
+			this.camera.getFar()
+		);
+	}
 
-		if (w !== 0) {
-			x /= w;
-			y /= w;
-			z /= w;
-		}
-
-		return new Vector3D(x, y, z);
+	private updateFov(fov: number): void {
+		this.currentFov = fov;
+		this.camera.setFov(fov);
 	}
 }

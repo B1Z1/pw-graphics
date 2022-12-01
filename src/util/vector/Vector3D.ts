@@ -2,7 +2,8 @@ export class Vector3D {
 	constructor(
 		private x: number,
 		private y: number,
-		private z: number
+		private z: number,
+		private w: number = 1
 	) {
 	}
 
@@ -30,7 +31,15 @@ export class Vector3D {
 		this.z = z;
 	}
 
+	getW(): number {
+		return this.w;
+	}
+
+	setW(w: number): void {
+		this.w = w;
+	}
+
 	copy(): Vector3D {
-		return new Vector3D(this.x, this.y, this.z);
+		return new Vector3D(this.x, this.y, this.z, this.w);
 	}
 }

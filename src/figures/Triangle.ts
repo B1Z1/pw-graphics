@@ -1,4 +1,4 @@
-import { Vector3D } from './Vector3D';
+import { Vector3D } from '../util/vector/Vector3D';
 
 export class Triangle {
 	constructor(

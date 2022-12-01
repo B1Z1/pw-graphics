@@ -9,11 +9,11 @@ export class Matrix {
 	) {
 	}
 
-	getMatrix(): number[][] {
+	getValues(): number[][] {
 		return this.matrix;
 	}
 
-	setMatrix(x: number, y: number, value: number): void {
+	setValue(x: number, y: number, value: number): void {
 		this.matrix[x][y] = value;
 	}
 }
