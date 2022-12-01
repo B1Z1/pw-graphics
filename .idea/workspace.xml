@@ -4,18 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8896b4e0-8a9b-409f-9505-f7c36353d208" name="Changes" comment="Update IDE settings">
-      <change afterPath="$PROJECT_DIR$/src/camera/Camera.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/scene/SceneMoveState.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/util/matrix/MatrixCalculator.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/util/vector/VectorCalculator.ts" afterDir="false" />
+    <list default="true" id="8896b4e0-8a9b-409f-9505-f7c36353d208" name="Changes" comment="Refactor code. Make everything with triangles and matrices">
+      <change afterPath="$PROJECT_DIR$/src/scene/SceneRotationState.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene/Cube.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/figures/Cube.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene/Matrix.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/util/matrix/Matrix.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene/Mesh.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/util/mesh/Mesh.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scene/Scene.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/Scene.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene/Triangle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/figures/Triangle.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene/Vector3D.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/util/vector/Vector3D.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/SceneMoveState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/SceneMoveState.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,7 +81,7 @@
       <workItem from="1669752040155" duration="722000" />
       <workItem from="1669831240656" duration="193000" />
       <workItem from="1669925561480" duration="96000" />
-      <workItem from="1669925673919" duration="2568000" />
+      <workItem from="1669925673919" duration="3204000" />
     </task>
     <task id="LOCAL-00001" summary="Add tailwind and sass to application">
       <created>1668460362125</created>
@@ -125,7 +118,14 @@
       <option name="project" value="LOCAL" />
       <updated>1669563838403</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Refactor code. Make everything with triangles and matrices">
+      <created>1669928799377</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1669928799377</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -150,7 +150,8 @@
     <MESSAGE value="Refactor files and render cube dotes with triangles" />
     <MESSAGE value="Create cube" />
     <MESSAGE value="Update IDE settings" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update IDE settings" />
+    <MESSAGE value="Refactor code. Make everything with triangles and matrices" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor code. Make everything with triangles and matrices" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
