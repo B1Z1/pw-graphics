@@ -29,6 +29,8 @@ export class Scene {
 		2
 	);
 
+	private matrixWorld: Matrix = new Matrix();
+
 	private lookDirectionVector: Vector3D = new Vector3D(0, 0, 1);
 	private width: number = 0;
 	private height: number = 0;
@@ -54,6 +56,8 @@ export class Scene {
 	}
 
 	private initialize(): void {
+		this.initializeWorldMatrix();
+
 		this.updateSize();
 		this.updateAspectRatio();
 		this.updateMatrixProjection();
@@ -63,6 +67,17 @@ export class Scene {
 		this.observeKeyUp();
 
 		this.render();
+	}
+
+	private initializeWorldMatrix(): void {
+		const matrixRotationZ: Matrix = MatrixCalculator.createMatrixRotationZ(0);
+		const matrixRotationX: Matrix = MatrixCalculator.createMatrixRotationX(0);
+		const matrixTranslation: Matrix = MatrixCalculator.createMatrixTranslation(new Vector3D(0, 0, 10));
+
+		let matrixWorld: Matrix = MatrixCalculator.multiply(matrixRotationZ, matrixRotationX);
+		matrixWorld = MatrixCalculator.multiply(matrixWorld, matrixTranslation);
+
+		this.matrixWorld = matrixWorld;
 	}
 
 	private observeWindowResize(): void {
@@ -108,6 +123,14 @@ export class Scene {
 					this.rotationState = SceneRotationState.LEFT;
 					break;
 				}
+				case 'KeyQ': {
+					this.rotationState = SceneRotationState.UP;
+					break;
+				}
+				case 'KeyE': {
+					this.rotationState = SceneRotationState.DOWN;
+					break;
+				}
 				case 'KeyZ': {
 					let fov = Scene.DEFAULT_FOV;
 
@@ -135,6 +158,8 @@ export class Scene {
 					break;
 				case 'KeyD':
 				case 'KeyA':
+				case 'KeyQ':
+				case 'KeyE':
 					this.rotationState = SceneRotationState.NONE;
 					break;
 			}
@@ -157,6 +182,14 @@ export class Scene {
 	private render(): void {
 		this.ctx.clearRect(0, 0, this.width, this.height);
 
+		this.handleMoveState();
+		this.handleRotationState();
+		this.renderCube();
+
+		requestAnimationFrame(() => this.render());
+	}
+
+	private handleMoveState(): void {
 		const forward = VectorCalculator.multiply(this.lookDirectionVector, .1);
 
 		switch (this.moveState) {
@@ -187,7 +220,9 @@ export class Scene {
 				break;
 			}
 		}
+	}
 
+	private handleRotationState(): void {
 		switch (this.rotationState) {
 			case SceneRotationState.UP: {
 				this.camera.setXaw(this.camera.getXaw() - .01);
@@ -206,26 +241,17 @@ export class Scene {
 				break;
 			}
 		}
-
-		this.renderCube();
-
-		requestAnimationFrame(() => this.render());
 	}
 
 	private renderCube(): void {
-		const matrixRotationZ: Matrix = MatrixCalculator.createMatrixRotationZ(0);
-		const matrixRotationX: Matrix = MatrixCalculator.createMatrixRotationX(0);
-
-		const matrixTranslation: Matrix = MatrixCalculator.createMatrixTranslation(new Vector3D(0, 0, 10));
-
-		let matrixWorld: Matrix = MatrixCalculator.multiply(matrixRotationZ, matrixRotationX);
-		matrixWorld = MatrixCalculator.multiply(matrixWorld, matrixTranslation);
-
 		const upVector3D: Vector3D = new Vector3D(0, 1, 0);
+		const matrixCameraRotationY: Matrix = MatrixCalculator.createMatrixRotationY(this.camera.getYaw());
+		const matrixCameraRotationX: Matrix = MatrixCalculator.createMatrixRotationX(this.camera.getXaw());
 		let targetVector3D: Vector3D = new Vector3D(0, 0, 1);
-		const matrixCameraRotation: Matrix = MatrixCalculator.createMatrixRotationY(this.camera.getYaw());
 
-		this.lookDirectionVector = MatrixCalculator.multiplyVector(matrixCameraRotation, targetVector3D);
+		this.lookDirectionVector = MatrixCalculator.multiplyVector(matrixCameraRotationY, targetVector3D);
+		this.lookDirectionVector = MatrixCalculator.multiplyVector(matrixCameraRotationX, this.lookDirectionVector);
+
 		targetVector3D = VectorCalculator.add(this.camera.getPosition(), this.lookDirectionVector);
 
 		const matrixCamera: Matrix = MatrixCalculator.pointAt(this.camera.getPosition(), targetVector3D, upVector3D);
@@ -236,9 +262,9 @@ export class Scene {
 			const triangleVectors = triangle.getVectors();
 
 			const triangleTransformed = new Triangle([
-				MatrixCalculator.multiplyVector(matrixWorld, triangleVectors[0]),
-				MatrixCalculator.multiplyVector(matrixWorld, triangleVectors[1]),
-				MatrixCalculator.multiplyVector(matrixWorld, triangleVectors[2])
+				MatrixCalculator.multiplyVector(this.matrixWorld, triangleVectors[0]),
+				MatrixCalculator.multiplyVector(this.matrixWorld, triangleVectors[1]),
+				MatrixCalculator.multiplyVector(this.matrixWorld, triangleVectors[2])
 			]);
 			const triangleTransformedVectors = triangleTransformed.getVectors();
 

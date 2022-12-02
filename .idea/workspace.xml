@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8896b4e0-8a9b-409f-9505-f7c36353d208" name="Changes" comment="Update workspace.xml">
-      <change afterPath="$PROJECT_DIR$/src/scene/SceneRotationState.ts" afterDir="false" />
+    <list default="true" id="8896b4e0-8a9b-409f-9505-f7c36353d208" name="Changes" comment="Create movement for camera">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/camera/Camera.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/camera/Camera.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scene/Scene.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/Scene.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene/SceneMoveState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/SceneMoveState.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,7 +81,7 @@
       <workItem from="1669925561480" duration="96000" />
       <workItem from="1669925673919" duration="5218000" />
       <workItem from="1670004576144" duration="25000" />
-      <workItem from="1670004612292" duration="3307000" />
+      <workItem from="1670004612292" duration="4382000" />
     </task>
     <task id="LOCAL-00001" summary="Add tailwind and sass to application">
       <created>1668460362125</created>
@@ -135,7 +132,14 @@
       <option name="project" value="LOCAL" />
       <updated>1669929484335</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Create movement for camera">
+      <created>1670019345285</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1670019345285</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -162,7 +166,8 @@
     <MESSAGE value="Update IDE settings" />
     <MESSAGE value="Refactor code. Make everything with triangles and matrices" />
     <MESSAGE value="Update workspace.xml" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update workspace.xml" />
+    <MESSAGE value="Create movement for camera" />
+    <option name="LAST_COMMIT_MESSAGE" value="Create movement for camera" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
