@@ -6,6 +6,7 @@ import { SceneMoveState } from './SceneMoveState';
 import { MatrixCalculator } from '../util/matrix/MatrixCalculator';
 import { Camera } from '../camera/Camera';
 import { VectorCalculator } from '../util/vector/VectorCalculator';
+import { SceneRotationState } from './SceneRotationState';
 
 export class Scene {
 	private static readonly DEFAULT_FOV = 90;
@@ -15,14 +16,11 @@ export class Scene {
 
 	private readonly ctx: CanvasRenderingContext2D;
 
-	private readonly speed: number = 0.05;
-
 	private readonly camera: Camera = new Camera(
 		new Vector3D(0, 0, 0),
 		0.1,
 		100,
 		Scene.DEFAULT_FOV,
-		0,
 		0
 	);
 
@@ -32,7 +30,6 @@ export class Scene {
 	);
 
 	private lookDirectionVector: Vector3D = new Vector3D(0, 0, 1);
-
 	private width: number = 0;
 	private height: number = 0;
 
@@ -40,7 +37,7 @@ export class Scene {
 	private dy: number = 0;
 
 	private moveState: SceneMoveState = SceneMoveState.IDLE;
-
+	private rotationState: SceneRotationState = SceneRotationState.NONE;
 	private matrixProjection = new Matrix();
 
 	private currentFov: number = Scene.DEFAULT_FOV;
@@ -78,24 +75,40 @@ export class Scene {
 
 	private observeKeyDown(): void {
 		window.addEventListener('keydown', (event: KeyboardEvent) => {
-			switch (event.key) {
-				case 'w': {
+			switch (event.code) {
+				case 'ArrowUp': {
 					this.moveState = SceneMoveState.UP;
 					break;
 				}
-				case 'd': {
+				case 'ArrowRight': {
 					this.moveState = SceneMoveState.RIGHT;
 					break;
 				}
-				case 's': {
+				case 'ArrowDown': {
 					this.moveState = SceneMoveState.DOWN;
 					break;
 				}
-				case 'a': {
+				case 'ArrowLeft': {
 					this.moveState = SceneMoveState.LEFT;
 					break;
 				}
-				case 'z': {
+				case 'KeyW': {
+					this.moveState = SceneMoveState.FORWARD;
+					break;
+				}
+				case 'KeyD': {
+					this.rotationState = SceneRotationState.RIGHT;
+					break;
+				}
+				case 'KeyS': {
+					this.moveState = SceneMoveState.BACKWARD;
+					break;
+				}
+				case 'KeyA': {
+					this.rotationState = SceneRotationState.LEFT;
+					break;
+				}
+				case 'KeyZ': {
 					let fov = Scene.DEFAULT_FOV;
 
 					if (this.currentFov === Scene.DEFAULT_FOV) {
@@ -110,8 +123,22 @@ export class Scene {
 	}
 
 	private observeKeyUp(): void {
-		window.addEventListener('keyup', () => {
-			this.moveState = SceneMoveState.IDLE;
+		window.addEventListener('keyup', (event: KeyboardEvent) => {
+			switch (event.code) {
+				case 'ArrowUp':
+				case 'ArrowRight':
+				case 'ArrowDown':
+				case 'ArrowLeft':
+				case 'KeyW':
+				case 'KeyS':
+					this.moveState = SceneMoveState.IDLE;
+					break;
+				case 'KeyD':
+				case 'KeyA':
+					this.rotationState = SceneRotationState.NONE;
+					break;
+			}
+
 		});
 	}
 
@@ -133,21 +160,48 @@ export class Scene {
 		const forward = VectorCalculator.multiply(this.lookDirectionVector, .1);
 
 		switch (this.moveState) {
-			case SceneMoveState.UP: {
+			case SceneMoveState.FORWARD: {
 				const newPosition = VectorCalculator.add(this.camera.getPosition(), forward);
 				this.camera.setPosition(newPosition);
 				break;
 			}
-			case SceneMoveState.DOWN: {
+			case SceneMoveState.BACKWARD: {
 				const newPosition = VectorCalculator.substract(this.camera.getPosition(), forward);
 				this.camera.setPosition(newPosition);
 				break;
 			}
+			case SceneMoveState.UP: {
+				this.camera.setY(this.camera.getY() + .1);
+				break;
+			}
+			case SceneMoveState.DOWN: {
+				this.camera.setY(this.camera.getY() - .1);
+				break;
+			}
 			case SceneMoveState.LEFT: {
-				this.camera.setYaw(this.camera.getYaw() - .01);
+				this.camera.setX(this.camera.getX() + .1);
 				break;
 			}
 			case SceneMoveState.RIGHT: {
+				this.camera.setX(this.camera.getX() - .1);
+				break;
+			}
+		}
+
+		switch (this.rotationState) {
+			case SceneRotationState.UP: {
+				this.camera.setXaw(this.camera.getXaw() - .01);
+				break;
+			}
+			case SceneRotationState.DOWN: {
+				this.camera.setXaw(this.camera.getXaw() + .01);
+				break;
+			}
+			case SceneRotationState.LEFT: {
+				this.camera.setYaw(this.camera.getYaw() - .01);
+				break;
+			}
+			case SceneRotationState.RIGHT: {
 				this.camera.setYaw(this.camera.getYaw() + .01);
 				break;
 			}
@@ -162,7 +216,7 @@ export class Scene {
 		const matrixRotationZ: Matrix = MatrixCalculator.createMatrixRotationZ(0);
 		const matrixRotationX: Matrix = MatrixCalculator.createMatrixRotationX(0);
 
-		const matrixTranslation: Matrix = MatrixCalculator.createMatrixTranslation(new Vector3D(0, 0, 55));
+		const matrixTranslation: Matrix = MatrixCalculator.createMatrixTranslation(new Vector3D(0, 0, 10));
 
 		let matrixWorld: Matrix = MatrixCalculator.multiply(matrixRotationZ, matrixRotationX);
 		matrixWorld = MatrixCalculator.multiply(matrixWorld, matrixTranslation);

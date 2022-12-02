@@ -1,13 +1,15 @@
 import { Vector3D } from '../util/vector/Vector3D';
 
 export class Camera {
+	private yAw: number = 0;
+	private xAw: number = 0;
+
 	constructor(
 		private position: Vector3D = new Vector3D(0, 0, 0),
 		private near: number = 0.1,
 		private far: number = 100,
 		private fov: number = 90,
-		private aspectRatio: number = 0,
-		private yaw: number = 0
+		private aspectRatio: number = 0
 	) {
 	}
 
@@ -32,7 +34,7 @@ export class Camera {
 	}
 
 	setY(y: number): void {
-		this.position.setX(y);
+		this.position.setY(y);
 	}
 
 	getZ(): number {
@@ -76,10 +78,18 @@ export class Camera {
 	}
 
 	getYaw(): number {
-		return this.yaw;
+		return this.yAw;
 	}
 
-	setYaw(yaw: number): void {
-		this.yaw = yaw;
+	setYaw(yAw: number): void {
+		this.yAw = yAw;
+	}
+
+	getXaw(): number {
+		return this.xAw;
+	}
+
+	setXaw(xAw: number): void {
+		this.xAw = xAw;
 	}
 }
