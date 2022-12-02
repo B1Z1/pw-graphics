@@ -24,10 +24,32 @@ export class Scene {
 		0
 	);
 
-	private readonly cube: Cube = new Cube(
-		new Vector3D(0, 0, 10),
-		2
-	);
+	private readonly objects: Array<Cube> = [
+		new Cube(
+			new Vector3D(5, 0, 10),
+			2
+		),
+		new Cube(
+			new Vector3D(-5, 0, 10),
+			2
+		),
+		new Cube(
+			new Vector3D(5, 0, 15),
+			2
+		),
+		new Cube(
+			new Vector3D(-5, 0, 15),
+			2
+		),
+		new Cube(
+			new Vector3D(10, 2, 20),
+			5
+		),
+		new Cube(
+			new Vector3D(-10, 1, 20),
+			4
+		),
+	];
 
 	private matrixWorld: Matrix = new Matrix();
 
@@ -184,7 +206,22 @@ export class Scene {
 
 		this.handleMoveState();
 		this.handleRotationState();
-		this.renderCube();
+
+		const upVector3D: Vector3D = new Vector3D(0, 1, 0);
+		const matrixCameraRotationY: Matrix = MatrixCalculator.createMatrixRotationY(this.camera.getYaw());
+		const matrixCameraRotationX: Matrix = MatrixCalculator.createMatrixRotationX(this.camera.getXaw());
+		let targetVector3D: Vector3D = new Vector3D(0, 0, 1);
+
+		this.lookDirectionVector = MatrixCalculator.multiplyVector(matrixCameraRotationY, targetVector3D);
+		this.lookDirectionVector = MatrixCalculator.multiplyVector(matrixCameraRotationX, this.lookDirectionVector);
+
+		targetVector3D = VectorCalculator.add(this.camera.getPosition(), this.lookDirectionVector);
+
+		const matrixCamera: Matrix = MatrixCalculator.pointAt(this.camera.getPosition(), targetVector3D, upVector3D);
+
+		const matrixView: Matrix = MatrixCalculator.quickInverse(matrixCamera);
+
+		this.renderObjects(matrixView);
 
 		requestAnimationFrame(() => this.render());
 	}
@@ -243,76 +280,65 @@ export class Scene {
 		}
 	}
 
-	private renderCube(): void {
-		const upVector3D: Vector3D = new Vector3D(0, 1, 0);
-		const matrixCameraRotationY: Matrix = MatrixCalculator.createMatrixRotationY(this.camera.getYaw());
-		const matrixCameraRotationX: Matrix = MatrixCalculator.createMatrixRotationX(this.camera.getXaw());
-		let targetVector3D: Vector3D = new Vector3D(0, 0, 1);
+	private renderObjects(matrixView: Matrix): void {
+		for (const object of this.objects) {
+			const triangles = object.getMesh().getTriangles();
 
-		this.lookDirectionVector = MatrixCalculator.multiplyVector(matrixCameraRotationY, targetVector3D);
-		this.lookDirectionVector = MatrixCalculator.multiplyVector(matrixCameraRotationX, this.lookDirectionVector);
+			for (const triangle of triangles) {
+				const triangleVectors = triangle.getVectors();
 
-		targetVector3D = VectorCalculator.add(this.camera.getPosition(), this.lookDirectionVector);
+				const triangleTransformed = new Triangle([
+					MatrixCalculator.multiplyVector(this.matrixWorld, triangleVectors[0]),
+					MatrixCalculator.multiplyVector(this.matrixWorld, triangleVectors[1]),
+					MatrixCalculator.multiplyVector(this.matrixWorld, triangleVectors[2])
+				]);
+				const triangleTransformedVectors = triangleTransformed.getVectors();
 
-		const matrixCamera: Matrix = MatrixCalculator.pointAt(this.camera.getPosition(), targetVector3D, upVector3D);
+				const triangleView: Triangle = new Triangle([
+					MatrixCalculator.multiplyVector(matrixView, triangleTransformedVectors[0]),
+					MatrixCalculator.multiplyVector(matrixView, triangleTransformedVectors[1]),
+					MatrixCalculator.multiplyVector(matrixView, triangleTransformedVectors[2])
+				]);
+				const triangleViewVectors = triangleView.getVectors();
 
-		const matrixView: Matrix = MatrixCalculator.quickInverse(matrixCamera);
+				const triangleProjected = new Triangle([
+					MatrixCalculator.multiplyVector(this.matrixProjection, triangleViewVectors[0]),
+					MatrixCalculator.multiplyVector(this.matrixProjection, triangleViewVectors[1]),
+					MatrixCalculator.multiplyVector(this.matrixProjection, triangleViewVectors[2])
+				]);
+				const triangleProjectedVectors = triangleProjected.getVectors();
 
-		for (const triangle of this.cube.getMesh().getTriangles()) {
-			const triangleVectors = triangle.getVectors();
+				triangleProjectedVectors[0] = VectorCalculator.divide(triangleProjectedVectors[0], triangleProjectedVectors[0].getW());
+				triangleProjectedVectors[1] = VectorCalculator.divide(triangleProjectedVectors[1], triangleProjectedVectors[1].getW());
+				triangleProjectedVectors[2] = VectorCalculator.divide(triangleProjectedVectors[2], triangleProjectedVectors[2].getW());
 
-			const triangleTransformed = new Triangle([
-				MatrixCalculator.multiplyVector(this.matrixWorld, triangleVectors[0]),
-				MatrixCalculator.multiplyVector(this.matrixWorld, triangleVectors[1]),
-				MatrixCalculator.multiplyVector(this.matrixWorld, triangleVectors[2])
-			]);
-			const triangleTransformedVectors = triangleTransformed.getVectors();
+				triangleProjectedVectors[0].setX(triangleProjectedVectors[0].getX() * -1);
+				triangleProjectedVectors[0].setY(triangleProjectedVectors[0].getY() * -1);
 
-			const triangleView: Triangle = new Triangle([
-				MatrixCalculator.multiplyVector(matrixView, triangleTransformedVectors[0]),
-				MatrixCalculator.multiplyVector(matrixView, triangleTransformedVectors[1]),
-				MatrixCalculator.multiplyVector(matrixView, triangleTransformedVectors[2])
-			]);
-			const triangleViewVectors = triangleView.getVectors();
+				triangleProjectedVectors[1].setX(triangleProjectedVectors[1].getX() * -1);
+				triangleProjectedVectors[1].setY(triangleProjectedVectors[1].getY() * -1);
 
-			const triangleProjected = new Triangle([
-				MatrixCalculator.multiplyVector(this.matrixProjection, triangleViewVectors[0]),
-				MatrixCalculator.multiplyVector(this.matrixProjection, triangleViewVectors[1]),
-				MatrixCalculator.multiplyVector(this.matrixProjection, triangleViewVectors[2])
-			]);
-			const triangleProjectedVectors = triangleProjected.getVectors();
+				triangleProjectedVectors[2].setX(triangleProjectedVectors[2].getX() * -1);
+				triangleProjectedVectors[2].setY(triangleProjectedVectors[2].getY() * -1);
 
-			triangleProjectedVectors[0] = VectorCalculator.divide(triangleProjectedVectors[0], triangleProjectedVectors[0].getW());
-			triangleProjectedVectors[1] = VectorCalculator.divide(triangleProjectedVectors[1], triangleProjectedVectors[1].getW());
-			triangleProjectedVectors[2] = VectorCalculator.divide(triangleProjectedVectors[2], triangleProjectedVectors[2].getW());
+				const offsetViewVector = new Vector3D(1, 1, 0);
 
-			triangleProjectedVectors[0].setX(triangleProjectedVectors[0].getX() * -1);
-			triangleProjectedVectors[0].setY(triangleProjectedVectors[0].getY() * -1);
+				triangleProjectedVectors[0] = VectorCalculator.add(triangleProjectedVectors[0], offsetViewVector);
+				triangleProjectedVectors[1] = VectorCalculator.add(triangleProjectedVectors[1], offsetViewVector);
+				triangleProjectedVectors[2] = VectorCalculator.add(triangleProjectedVectors[2], offsetViewVector);
 
-			triangleProjectedVectors[1].setX(triangleProjectedVectors[1].getX() * -1);
-			triangleProjectedVectors[1].setY(triangleProjectedVectors[1].getY() * -1);
+				triangleProjectedVectors[0].setX(triangleProjectedVectors[0].getX() * this.dx);
+				triangleProjectedVectors[0].setY(triangleProjectedVectors[0].getY() * this.dy);
 
-			triangleProjectedVectors[2].setX(triangleProjectedVectors[2].getX() * -1);
-			triangleProjectedVectors[2].setY(triangleProjectedVectors[2].getY() * -1);
+				triangleProjectedVectors[1].setX(triangleProjectedVectors[1].getX() * this.dx);
+				triangleProjectedVectors[1].setY(triangleProjectedVectors[1].getY() * this.dy);
 
-			const offsetViewVector = new Vector3D(1, 1, 0);
+				triangleProjectedVectors[2].setX(triangleProjectedVectors[2].getX() * this.dx);
+				triangleProjectedVectors[2].setY(triangleProjectedVectors[2].getY() * this.dy);
 
-			triangleProjectedVectors[0] = VectorCalculator.add(triangleProjectedVectors[0], offsetViewVector);
-			triangleProjectedVectors[1] = VectorCalculator.add(triangleProjectedVectors[1], offsetViewVector);
-			triangleProjectedVectors[2] = VectorCalculator.add(triangleProjectedVectors[2], offsetViewVector);
-
-			triangleProjectedVectors[0].setX(triangleProjectedVectors[0].getX() * this.dx);
-			triangleProjectedVectors[0].setY(triangleProjectedVectors[0].getY() * this.dy);
-
-			triangleProjectedVectors[1].setX(triangleProjectedVectors[1].getX() * this.dx);
-			triangleProjectedVectors[1].setY(triangleProjectedVectors[1].getY() * this.dy);
-
-			triangleProjectedVectors[2].setX(triangleProjectedVectors[2].getX() * this.dx);
-			triangleProjectedVectors[2].setY(triangleProjectedVectors[2].getY() * this.dy);
-
-			this.drawTriangle(triangleProjected);
+				this.drawTriangle(triangleProjected);
+			}
 		}
-
 	}
 
 	private drawTriangle(triangle: Triangle): void {
