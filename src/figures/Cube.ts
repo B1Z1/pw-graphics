@@ -8,7 +8,8 @@ export class Cube {
 
 	constructor(
 		private readonly center: Vector3D = new Vector3D(0.5, 0.5, 0.5),
-		private readonly size: number = 1
+		private readonly size: number = 1,
+		private readonly color: string = 'black'
 	) {
 		this.updateD();
 		this.updateMesh();
@@ -43,6 +44,10 @@ export class Cube {
 
 	getMesh(): Mesh {
 		return this.mesh;
+	}
+
+	getColor(): string {
+		return this.color;
 	}
 
 	private updateD(): void {

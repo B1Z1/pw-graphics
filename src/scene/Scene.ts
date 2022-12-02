@@ -26,12 +26,14 @@ export class Scene {
 
 	private readonly objects: Array<Cube> = [
 		new Cube(
-			new Vector3D(5, 0, 10),
-			2
+			new Vector3D(10, 2, 20),
+			5,
+			'red'
 		),
 		new Cube(
-			new Vector3D(-5, 0, 10),
-			2
+			new Vector3D(-10, 1, 20),
+			4,
+			'red'
 		),
 		new Cube(
 			new Vector3D(5, 0, 15),
@@ -42,13 +44,15 @@ export class Scene {
 			2
 		),
 		new Cube(
-			new Vector3D(10, 2, 20),
-			5
+			new Vector3D(5, 0, 10),
+			2,
+			'orange'
 		),
 		new Cube(
-			new Vector3D(-10, 1, 20),
-			4
-		),
+			new Vector3D(-5, 0, 10),
+			2,
+			'orange'
+		)
 	];
 
 	private matrixWorld: Matrix = new Matrix();
@@ -282,6 +286,7 @@ export class Scene {
 
 	private renderObjects(matrixView: Matrix): void {
 		for (const object of this.objects) {
+			const color = object.getColor();
 			const triangles = object.getMesh().getTriangles();
 
 			for (const triangle of triangles) {
@@ -336,15 +341,17 @@ export class Scene {
 				triangleProjectedVectors[2].setX(triangleProjectedVectors[2].getX() * this.dx);
 				triangleProjectedVectors[2].setY(triangleProjectedVectors[2].getY() * this.dy);
 
-				this.drawTriangle(triangleProjected);
+				this.drawTriangle(triangleProjected, color);
 			}
 		}
 	}
 
-	private drawTriangle(triangle: Triangle): void {
+	private drawTriangle(triangle: Triangle, color: string): void {
 		const [triangleFirstVector, triangleSecondVector, triangleThirdVector] = triangle.getVectors();
 
-		this.ctx.strokeStyle = 'black';
+		this.ctx.strokeStyle = color;
+		this.ctx.fillStyle = color;
+
 		this.ctx.beginPath();
 		this.ctx.moveTo(triangleFirstVector.getX(), triangleFirstVector.getY());
 		this.ctx.lineTo(triangleSecondVector.getX(), triangleSecondVector.getY());
