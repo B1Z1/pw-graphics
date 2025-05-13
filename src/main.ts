@@ -1,3 +1,6 @@
 import './style.scss';
+import { Scene } from './scene/Scene';
 
-console.log(document.querySelector('#canvas'));
+window.addEventListener('load', () => {
+	new Scene('#canvas');
+});
